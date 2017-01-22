@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.alfredapp.david.googlesuggest</string>
+	<key>category</key>
+	<string>Tools</string>
+	<key>connections</key>
+	<dict>
+		<key>63F60794-BB56-4415-9372-BAF974C3A7E1</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>06FF50CF-68A6-4860-B9A9-CA349425ED25</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Garin Zhang</string>
+	<key>description</key>
+	<string>Get Google Search Suggestions</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>百度搜索</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>36</integer>
+				<key>keyword</key>
+				<string>b</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>正在搜索……</string>
+				<key>script</key>
+				<string>require_once('workflows.php');
+require_once('simple_html_dom.php');
+$wf = new Workflows();
+
+$orig = "{query}";
+$header = array (
+        "Host:www.baidu.com",
+        "Content-Type:application/x-www-form-urlencoded",//post请求
+        "Connection: keep-alive",
+        'User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; BIDUBrowser 2.6)'
+);
+
+$xml = $wf-&gt;request( "https://www.baidu.com/s?&amp;wd=".urlencode( $orig ), array(
+    CURLOPT_HTTPHEADER =&gt; $header,
+    CURLOPT_RETURNTRANSFER =&gt; 1
+));
+
+$html = new simple_html_dom();
+$html-&gt;load($xml);
+$result = $html-&gt;find('#content_left .c-container h3');
+
+$int = 1;
+foreach ($result as $element):
+    $data = $element-&gt;plaintext;
+	trim($data, ' ');
+	$wf-&gt;result( $int.'.'.time(), "$data", "$data", '在百度中搜索'.$data, 'icon.png'  );
+    $int++;
+endforeach;
+
+$results = $wf-&gt;results();
+if ( count( $results ) == 0 ):
+	$wf-&gt;result( '未搜索到 '.$org.' 相关信息', 'icon.png' );
+endif;
+
+echo $wf-&gt;toxml();</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>在百度中搜索 {query}</string>
+				<key>title</key>
+				<string>百度搜索</string>
+				<key>type</key>
+				<integer>1</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>63F60794-BB56-4415-9372-BAF974C3A7E1</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>https://www.baidu.com/s?wd={query}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>06FF50CF-68A6-4860-B9A9-CA349425ED25</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>This workflow gives you in-line results for Google, helping you find what you want even quicker!</string>
+	<key>uidata</key>
+	<dict>
+		<key>06FF50CF-68A6-4860-B9A9-CA349425ED25</key>
+		<dict>
+			<key>xpos</key>
+			<integer>220</integer>
+			<key>ypos</key>
+			<integer>90</integer>
+		</dict>
+		<key>63F60794-BB56-4415-9372-BAF974C3A7E1</key>
+		<dict>
+			<key>xpos</key>
+			<integer>70</integer>
+			<key>ypos</key>
+			<integer>90</integer>
+		</dict>
+	</dict>
+	<key>version</key>
+	<string>1.0</string>
+	<key>webaddress</key>
+	<string>http://dferg.us</string>
+</dict>
+</plist>
